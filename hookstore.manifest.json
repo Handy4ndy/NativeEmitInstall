@@ -1,6 +1,6 @@
 {
   "manifestVersion": "1",
-  "name": "native-emit-install",
+  "name": "nativeemitinstall",
   "version": "1.0.0",
   "description": "Xahau Hook 101 Example - Install Native Emit. Emits native payments when incoming XAH matches exact amount.",
   "publisher": "rKdrRL3dVhfXVqx3FPMB9Ef6BXSmuwzFXr",
