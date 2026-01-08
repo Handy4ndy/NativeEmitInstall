@@ -96,8 +96,7 @@
             "description": "Exact amount to receive in XAH (triggers emit when matched)",
             "selector": [
               {
-                "type": "Blob",
-                "value": "AMT_IN"
+                "type": "Blob"
               }
             ],
             "data": [
@@ -111,8 +110,7 @@
             "description": "Amount to emit in XAH when triggered",
             "selector": [
               {
-                "type": "Blob",
-                "value": "AMT_OUT"
+                "type": "Blob"
               }
             ],
             "data": [
@@ -126,8 +124,7 @@
             "description": "Recipient account for emitted payments (20-byte AccountID)",
             "selector": [
               {
-                "type": "Blob",
-                "value": "F_ACC"
+                "type": "Blob"
               }
             ],
             "data": [
