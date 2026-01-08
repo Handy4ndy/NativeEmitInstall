@@ -1,31 +1,3 @@
-//**************************************************************
-// Xahau Hook 101 Example ~ Install Native Emit
-// Author: @Handy_4ndy
-//
-// Description:
-//   This hook emits a native payment to a user-defined account and amount, set via install parameters.
-//   Accepts outgoing payments and IOU payments.
-//   Only emits when the incoming XAH payment matches the exact amount set by install parameter.
-//
-// Parameters:
-//   'AMT_IN' (8 bytes): The exact amount to receive (XAH, uint64_t)
-//   'AMT_OUT' (8 bytes): The amount to emit (XAH, uint64_t)
-//   'F_ACC' (20 bytes): Recipient account (AccountID)
-//
-// Usage:
-//   - Set 'AMT_IN', 'AMT_OUT', and 'F_ACC' during hook installation.
-//   - Incoming XAH payments must match 'AMT_IN' exactly to trigger the emit to 'F_ACC' for 'AMT_OUT' XAH.
-//   - [Hooks Services](https://hooks.services/tools)
-//
-// Accepts:
-//   - Outgoing payments.
-//   - Incoming IOU payments.
-//   - Incoming XAH payments that match the exact amount set by install parameter.
-//
-// Rejects:
-//   - Incoming XAH payments that do not match the exact amount.
-//**************************************************************
-
 #include "hookapi.h"
 
 int64_t hook(uint32_t reserved)
