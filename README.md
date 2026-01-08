@@ -31,20 +31,27 @@ The hook requires three installation parameters:
 
 ### Accepts:
 - ✅ Outgoing payments from the hook account
-- ✅ Incoming IOU payments (any currency)
-- ✅ Incoming XAH payments that match `AMT_IN` exactly
+- ✅ Incoming IOU payments (any currency) - **Hook Chain Compatible**
+- ✅ Incoming XAH payments that don't match `AMT_IN` - **Hook Chain Compatible**
+- ✅ Incoming XAH payments that match `AMT_IN` exactly (triggers emit)
+
+### Hook Chain Compatibility:
+- ✅ **Non-matching XAH payments**: Accepted and passed through to next hook
+- ✅ **IOU payments**: Accepted and passed through to next hook  
+- ✅ **Only processes exact matches**: Emits payment only when `AMT_IN` is matched exactly
 
 ### Rejects:
-- ❌ Incoming XAH payments that don't match `AMT_IN`
 - ❌ Self-payments (when `F_ACC` equals hook account)
 - ❌ Invalid or missing parameters
 
 ### Processing Flow:
 1. Validates all hook parameters are correctly set
 2. Checks if transaction is outgoing (auto-accepts)
-3. For incoming XAH payments, verifies exact amount match
-4. If amount matches, emits payment to `F_ACC` for `AMT_OUT` XAH
-5. Accepts or rejects transaction based on criteria
+3. For incoming payments:
+   - **IOU payments**: Accepts and continues hook chain
+   - **Non-matching XAH payments**: Accepts and continues hook chain  
+   - **Exact XAH match**: Emits payment to `F_ACC` for `AMT_OUT` XAH, then accepts
+4. Continues transaction processing through hook chain
 
 ## Installation
 
@@ -53,8 +60,8 @@ The hook requires three installation parameters:
 3. **Test**: Send a payment matching `AMT_IN` to verify functionality
 
 ### Example Parameters:
-- `AMT_IN`: `1000000` (1 XAH in drops)
-- `AMT_OUT`: `500000` (0.5 XAH in drops) 
+- `AMT_IN`: `000000000000000A ` (10 XAH)
+- `AMT_OUT`: `000000000000000A ` (10 XAH) 
 - `F_ACC`: `rN7n7otQDd6FczFgLdSqtcsAUxDkw6fzRH` (destination account)
 
 ## Usage Example
