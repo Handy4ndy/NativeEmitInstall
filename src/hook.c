@@ -15,7 +15,8 @@ int64_t hook(uint32_t reserved)
 
     uint8_t exact_buf[8];
     // Get the amount to receive from the hook param
-    if (hook_param(SBUF(exact_buf), (uint32_t)"AMT_IN", 6) != 8)
+    int64_t exact_param_len = hook_param(SBUF(exact_buf), (uint32_t)"AMT_IN", 6);
+    if (exact_param_len != 8)
         rollback(SBUF("INE :: Error: Payment exactAmount not set"), __LINE__);
 
     uint64_t exactAmount = UINT64_FROM_BUF(exact_buf);
@@ -24,7 +25,8 @@ int64_t hook(uint32_t reserved)
 
     uint8_t amountOut_buf[8];
     // Get the amount to send from the hook param (In XAH)
-    if (hook_param(SBUF(amountOut_buf), (uint32_t)"AMT_OUT", 7) != 8)
+    int64_t amount_out_param_len = hook_param(SBUF(amountOut_buf), (uint32_t)"AMT_OUT", 7);
+    if (amount_out_param_len != 8)
         rollback(SBUF("INE :: Error: Payment amountOut not set"), __LINE__);
 
     uint64_t amountOut = UINT64_FROM_BUF(amountOut_buf);
@@ -33,7 +35,8 @@ int64_t hook(uint32_t reserved)
 
     uint8_t ftxn_acc[20];
     // Get the first account from the hook param
-    if (hook_param(SBUF(ftxn_acc), (uint32_t)"F_ACC", 5) != 20)
+    int64_t acc_param_len = hook_param(SBUF(ftxn_acc), (uint32_t)"F_ACC", 5);
+    if (acc_param_len != 20)
         rollback(SBUF("INE :: Error: Account F_ACC not set"), __LINE__);
 
     // Ensure the accounts are unique
@@ -52,6 +55,8 @@ int64_t hook(uint32_t reserved)
     // Buffer to hold the amount field from the transaction
     uint8_t amount_buffer[8];
     int64_t amount_len = otxn_field((uint32_t)amount_buffer, 8, sfAmount);
+    if (amount_len < 0)
+        rollback(SBUF("INE :: Error: Failed to read transaction amount field"), __LINE__);
     int64_t otxn_drops = AMOUNT_TO_DROPS(amount_buffer);
     int64_t amount_xfl = float_set(-6, otxn_drops);
     int64_t amount_int = float_int(amount_xfl, 0, 1);
@@ -59,7 +64,7 @@ int64_t hook(uint32_t reserved)
     TRACEVAR(exactAmount);
     TRACEVAR(amount_int);
 
-    // Ensure the payment is XAH
+    // Ensure the payment is XAH (Hook Chain Compatible: accept non-XAH to continue chain)
     if (amount_len != 8)
     {
         accept(SBUF("INE :: Skipping: Non-XAH payment accepted."), __LINE__);
