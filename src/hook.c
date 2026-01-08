@@ -66,10 +66,13 @@ int64_t hook(uint32_t reserved)
     }
 
     // Check if the payment is equal to the exact amount (drops)
-    // Additional overflow safety check
-    if (exactAmount > UINT64_MAX / 1000000)
-        rollback(SBUF("INE :: Error: exactAmount overflow during conversion"), __LINE__);
-    uint64_t exactAmountDrops = exactAmount * 1000000;
+    // Convert XAH to drops using safe XFL operations
+    int64_t exact_xfl = float_set(0, exactAmount);
+    int64_t million_xfl = float_set(0, 1000000);
+    int64_t exactAmountDrops_xfl = float_multiply(exact_xfl, million_xfl);
+    if (exactAmountDrops_xfl < 0)
+        rollback(SBUF("INE :: Error: XFL multiplication failed for exactAmount"), __LINE__);
+    uint64_t exactAmountDrops = float_int(exactAmountDrops_xfl, 0, 0);
     if (otxn_drops != exactAmountDrops)
     {
         accept(SBUF("INE :: Skipping: Payment amount doesn't match the exact_amount_value."), __LINE__);
@@ -79,10 +82,13 @@ int64_t hook(uint32_t reserved)
     etxn_reserve(1);
 
     // Prepare the payment transaction
-    // Additional overflow safety check
-    if (amountOut > UINT64_MAX / 1000000)
-        rollback(SBUF("INE :: Error: amountOut overflow during conversion"), __LINE__);
-    uint64_t amountOutDrops = amountOut * 1000000;
+    // Convert XAH to drops using safe XFL operations
+    int64_t amount_xfl = float_set(0, amountOut);
+    int64_t million_xfl = float_set(0, 1000000);
+    int64_t amountOutDrops_xfl = float_multiply(amount_xfl, million_xfl);
+    if (amountOutDrops_xfl < 0)
+        rollback(SBUF("INE :: Error: XFL multiplication failed for amountOut"), __LINE__);
+    uint64_t amountOutDrops = float_int(amountOutDrops_xfl, 0, 0);
     
     // Set transaction type to Payment
     etxn_details((uint32_t)ftxn_acc, 20);
