@@ -94,20 +94,47 @@
           {
             "name": "AMT_IN",
             "description": "Exact amount to receive in XAH (triggers emit when matched)",
-            "selector": ["AMT_IN"],
-            "data": ["UInt64"]
+            "selector": [
+              {
+                "type": "Blob",
+                "value": "AMT_IN"
+              }
+            ],
+            "data": [
+              {
+                "type": "UInt64"
+              }
+            ]
           },
           {
             "name": "AMT_OUT", 
             "description": "Amount to emit in XAH when triggered",
-            "selector": ["AMT_OUT"],
-            "data": ["UInt64"]
+            "selector": [
+              {
+                "type": "Blob",
+                "value": "AMT_OUT"
+              }
+            ],
+            "data": [
+              {
+                "type": "UInt64"
+              }
+            ]
           },
           {
             "name": "F_ACC",
             "description": "Recipient account for emitted payments (20-byte AccountID)",
-            "selector": ["F_ACC"],
-            "data": ["AccountID"]
+            "selector": [
+              {
+                "type": "Blob",
+                "value": "F_ACC"
+              }
+            ],
+            "data": [
+              {
+                "type": "AccountID"
+              }
+            ]
           }
         ]
       }
