@@ -66,9 +66,6 @@ int64_t hook(uint32_t reserved)
     }
 
     // Check if the payment is equal to the exact amount (drops)
-    // Additional overflow safety check
-    if (exactAmount > UINT64_MAX / 1000000)
-        rollback(SBUF("INE :: Error: exactAmount overflow during conversion"), __LINE__);
     uint64_t exactAmountDrops = exactAmount * 1000000;
     if (otxn_drops != exactAmountDrops)
     {
@@ -79,9 +76,6 @@ int64_t hook(uint32_t reserved)
     etxn_reserve(1);
 
     // Prepare the payment transaction
-    // Additional overflow safety check
-    if (amountOut > UINT64_MAX / 1000000)
-        rollback(SBUF("INE :: Error: amountOut overflow during conversion"), __LINE__);
     uint64_t amountOutDrops = amountOut * 1000000;
     
     // Set transaction type to Payment
