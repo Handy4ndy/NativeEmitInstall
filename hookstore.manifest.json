@@ -5,8 +5,7 @@
   "publisher": "rKdrRL3dVhfXVqx3FPMB9Ef6BXSmuwzFXr",
   "repo": "https://github.com/Handy4ndy/NativeEmitInstall",
   "networks": [
-    "xahau-testnet",
-    "xahau-mainnet"
+    "xahau-testnet"
   ],
   "roles": {
     "installer": {
