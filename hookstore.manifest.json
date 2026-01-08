@@ -89,47 +89,59 @@
         }
       ],
       "abi": {
-        "notes": "Hook accepts outgoing payments and IOU payments. For incoming XAH payments, only processes those that match the exact AMT_IN value. When matched, emits AMT_OUT XAH to F_ACC account.",
+        "notes": "INE (Install Native Emit) hook: Validates incoming XAH payments against configured exact amount, then emits outgoing payment to configured recipient. All hook parameters are installer-trusted and required. No otxn parameters or state management.",
         "hookParameters": [
           {
             "name": "AMT_IN",
-            "description": "Exact amount to receive in XAH (triggers emit when matched)",
+            "description": "Expected incoming payment amount in XAH (drops converted to XAH units). Must be non-zero. Validated against actual transaction amount.",
             "selector": [
               {
-                "type": "Blob"
+                "type": "VarString",
+                "pattern": "AMT_IN",
+                "patternEncoding": "ascii"
               }
             ],
             "data": [
               {
-                "type": "UInt64"
+                "type": "UInt64",
+                "label": "amount_xah",
+                "notes": "Non-zero XAH amount. Will be multiplied by 1,000,000 to convert to drops for comparison."
               }
             ]
           },
           {
-            "name": "AMT_OUT", 
-            "description": "Amount to emit in XAH when triggered",
+            "name": "AMT_OUT",
+            "description": "Outgoing payment amount in XAH to emit to recipient account. Must be non-zero.",
             "selector": [
               {
-                "type": "Blob"
+                "type": "VarString",
+                "pattern": "AMT_OUT",
+                "patternEncoding": "ascii"
               }
             ],
             "data": [
               {
-                "type": "UInt64"
+                "type": "UInt64",
+                "label": "amount_xah",
+                "notes": "Non-zero XAH amount. Will be multiplied by 1,000,000 to convert to drops for emitted transaction."
               }
             ]
           },
           {
             "name": "F_ACC",
-            "description": "Recipient account for emitted payments (20-byte AccountID)",
+            "description": "Recipient account for emitted payment. Must differ from hook account to prevent self-payment.",
             "selector": [
               {
-                "type": "Blob"
+                "type": "VarString",
+                "pattern": "F_ACC",
+                "patternEncoding": "ascii"
               }
             ],
             "data": [
               {
-                "type": "AccountID"
+                "type": "AccountID",
+                "label": "recipient_account",
+                "notes": "20-byte account ID. Validated to be different from hook account."
               }
             ]
           }
