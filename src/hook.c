@@ -15,7 +15,7 @@ int64_t hook(uint32_t reserved)
 
     uint8_t exact_buf[8];
     // Get the amount to receive from the hook param
-    if (hook_param(SBUF(exact_buf), "AMT_IN", 6) != 8)
+    if (hook_param(SBUF(exact_buf), (uint32_t)"AMT_IN", 6) != 8)
         rollback(SBUF("INE :: Error: Payment exactAmount not set"), __LINE__);
 
     uint64_t exactAmount = UINT64_FROM_BUF(exact_buf);
@@ -24,7 +24,7 @@ int64_t hook(uint32_t reserved)
 
     uint8_t amountOut_buf[8];
     // Get the amount to send from the hook param (In XAH)
-    if (hook_param(SBUF(amountOut_buf), "AMT_OUT", 7) != 8)
+    if (hook_param(SBUF(amountOut_buf), (uint32_t)"AMT_OUT", 7) != 8)
         rollback(SBUF("INE :: Error: Payment amountOut not set"), __LINE__);
 
     uint64_t amountOut = UINT64_FROM_BUF(amountOut_buf);
@@ -33,7 +33,7 @@ int64_t hook(uint32_t reserved)
 
     uint8_t ftxn_acc[20];
     // Get the first account from the hook param
-    if (hook_param(SBUF(ftxn_acc), "F_ACC", 5) != 20)
+    if (hook_param(SBUF(ftxn_acc), (uint32_t)"F_ACC", 5) != 20)
         rollback(SBUF("INE :: Error: Account F_ACC not set"), __LINE__);
 
     // Ensure the accounts are unique
