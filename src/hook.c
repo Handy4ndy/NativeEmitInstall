@@ -21,6 +21,10 @@ int64_t hook(uint32_t reserved)
     uint64_t exactAmount = UINT64_FROM_BUF(exact_buf);
     if (exactAmount == 0)
         rollback(SBUF("INE :: Error: exactAmount cannot be zero"), __LINE__);
+    
+    // Check for potential overflow before converting XAH to drops
+    if (exactAmount > 18446744073709551ULL)
+        rollback(SBUF("INE :: Error: exactAmount too large, would cause overflow"), __LINE__);
 
     uint8_t amountOut_buf[8];
     // Get the amount to send from the hook param (In XAH)
@@ -30,6 +34,10 @@ int64_t hook(uint32_t reserved)
     uint64_t amountOut = UINT64_FROM_BUF(amountOut_buf);
     if (amountOut == 0)
         rollback(SBUF("INE :: Error: amountOut cannot be zero"), __LINE__);
+    
+    // Check for potential overflow before converting XAH to drops
+    if (amountOut > 18446744073709551ULL)
+        rollback(SBUF("INE :: Error: amountOut too large, would cause overflow"), __LINE__);
 
     uint8_t ftxn_acc[20];
     // Get the first account from the hook param
