@@ -75,15 +75,23 @@ int64_t hook(uint32_t reserved)
     // Reserve space for the emitted transaction
     etxn_reserve(1);
 
-    // Prepare the first payment transactions
+    // Prepare the payment transaction
     uint64_t amountOutDrops = amountOut * 1000000;
-    uint8_t txn[PREPARE_PAYMENT_SIMPLE_SIZE];
-    PREPARE_PAYMENT_SIMPLE((uint32_t)txn, amountOutDrops, (uint32_t)ftxn_acc, 0, 0);
+    
+    // Set transaction type to Payment
+    etxn_details((uint32_t)ftxn_acc, 20);
+    
+    // Set amount field
+    uint8_t amount_out[8];
+    uint64_t drops_out = amountOutDrops;
+    UINT64_TO_BUF(amount_out, drops_out);
+    etxn_field((uint32_t)amount_out, 8, sfAmount);
 
     uint8_t emithash[32];
 
     // Emit the transaction and check if it was successful
-    if (emit(SBUF(emithash), SBUF(txn)) != 32)
+    int64_t emit_result = etxn_emit((uint32_t)emithash, 32);
+    if (emit_result < 0)
     {
         rollback(SBUF("INE :: Error: Failed to emit transactions"), __LINE__);
     }
