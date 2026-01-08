@@ -50,7 +50,65 @@
           }
         }
       ],
-       "abi": {}
+      "abi": {
+        "notes": "Install Native Emit (INE) hook: Validates incoming XAH payments against configured exact amount, then emits outgoing payment to specified account. All hook parameters are installer-configured and trusted. Hook operates on PAYMENT transactions only.",
+        "hookParameters": [
+          {
+            "name": "AMT_IN",
+            "description": "Exact incoming payment amount in XAH (converted to drops internally via 1M multiplier)",
+            "selector": [
+              {
+                "type": "VarString",
+                "pattern": "AMT_IN",
+                "patternEncoding": "ascii"
+              }
+            ],
+            "data": [
+              {
+                "type": "UInt64",
+                "label": "amount_xah",
+                "notes": "Value in XAH units. Code multiplies by 1,000,000 to convert to drops. Must be > 0. Overflow check: value must be <= UINT64_MAX / 1,000,000 (approx 18.4 exaXAH)"
+              }
+            ]
+          },
+          {
+            "name": "AMT_OUT",
+            "description": "Outgoing payment amount in XAH to emit to F_ACC (converted to drops internally via 1M multiplier)",
+            "selector": [
+              {
+                "type": "VarString",
+                "pattern": "AMT_OUT",
+                "patternEncoding": "ascii"
+              }
+            ],
+            "data": [
+              {
+                "type": "UInt64",
+                "label": "amount_xah",
+                "notes": "Value in XAH units. Code multiplies by 1,000,000 to convert to drops. Must be > 0. Overflow check: value must be <= UINT64_MAX / 1,000,000 (approx 18.4 exaXAH)"
+              }
+            ]
+          },
+          {
+            "name": "F_ACC",
+            "description": "Destination account for emitted payment transaction (first account in forward chain)",
+            "selector": [
+              {
+                "type": "VarString",
+                "pattern": "F_ACC",
+                "patternEncoding": "ascii"
+              }
+            ],
+            "data": [
+              {
+                "type": "AccountID",
+                "label": "destination_account",
+                "notes": "Must be exactly 20 bytes. Must differ from hook account (validated at runtime). Receives the emitted payment of AMT_OUT"
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "install": [
