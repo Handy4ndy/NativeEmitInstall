@@ -1,0 +1,131 @@
+{
+  "manifestVersion": "1",
+  "name": "native-emit-install",
+  "version": "1.0.0",
+  "description": "Xahau Hook 101 Example - Install Native Emit. Emits native payments when incoming XAH matches exact amount.",
+  "publisher": "rN7n7otQDd6FczFgLdSqtcsAUxDkw6fzRH",
+  "repo": "https://github.com/Handy4ndy/XahauHooks101",
+  "license": "MIT",
+  "networks": ["xahau-testnet"],
+  
+  "roles": {
+    "installer": {
+      "label": "Hook Account",
+      "description": "The account that will install and run this hook"
+    }
+  },
+  
+  "userConfig": {
+    "exactAmount": {
+      "label": "Exact Amount to Receive (XAH)",
+      "inputType": "uint64",
+      "encoding": "uint64",
+      "default": "5",
+      "endianness": "BE",
+      "description": "The exact amount in XAH that must be received to trigger the emit (e.g., 5 for 5 XAH)",
+      "required": true,
+      "validation": {
+        "min": 1,
+        "max": 1000000
+      }
+    },
+    "emitAmount": {
+      "label": "Amount to Emit (XAH)",
+      "inputType": "uint64",
+      "encoding": "uint64",
+      "default": "2",
+      "endianness": "BE",
+      "description": "The amount in XAH to emit when triggered (e.g., 2 for 2 XAH)",
+      "required": true,
+      "validation": {
+        "min": 1,
+        "max": 1000000
+      }
+    },
+    "recipientAccount": {
+      "label": "Recipient Account",
+      "inputType": "account",
+      "encoding": "hex",
+      "default": "rN7n7otQDd6FczFgLdSqtcsAUxDkw6fzRH",
+      "description": "The account that will receive the emitted payment",
+      "required": true,
+      "validation": {
+        "pattern": "^r[A-Za-z0-9]{25,34}$"
+      }
+    }
+  },
+  
+  "hooks": [
+    {
+      "id": "install-native-emit",
+      "artifact": {
+        "toolchain": "hooks-c",
+        "source_path": "src/hook.c"
+      },
+      "HookOn": ["PAYMENT"],
+      "HookCanEmit": ["PAYMENT"],
+      "HookNamespace": "0000000000000000000000000000000000000000000000000000000000000000",
+      "HookParameters": [
+        {
+          "HookParameterName": "AMT_IN",
+          "HookParameterValue": {
+            "type": "userConfig",
+            "value": "{{exactAmount}}"
+          }
+        },
+        {
+          "HookParameterName": "AMT_OUT",
+          "HookParameterValue": {
+            "type": "userConfig",
+            "value": "{{emitAmount}}"
+          }
+        },
+        {
+          "HookParameterName": "F_ACC",
+          "HookParameterValue": {
+            "type": "userConfig",
+            "value": "{{recipientAccount}}"
+          }
+        }
+      ],
+      "abi": {
+        "notes": "Hook accepts outgoing payments and IOU payments. For incoming XAH payments, only processes those that match the exact AMT_IN value. When matched, emits AMT_OUT XAH to F_ACC account.",
+        "hookParameters": [
+          {
+            "name": "AMT_IN",
+            "type": "uint64",
+            "description": "Exact amount to receive in XAH (triggers emit when matched)"
+          },
+          {
+            "name": "AMT_OUT", 
+            "type": "uint64",
+            "description": "Amount to emit in XAH when triggered"
+          },
+          {
+            "name": "F_ACC",
+            "type": "account",
+            "description": "Recipient account for emitted payments (20-byte AccountID)"
+          }
+        ]
+      }
+    }
+  ],
+  
+  "install": [
+    {
+      "TransactionType": "SetHook",
+      "description": "Install the Native Emit hook with configured parameters",
+      "required": true,
+      "role": "installer",
+      "hookIds": ["install-native-emit"]
+    }
+  ],
+  
+  "logo": "logo.png",
+  "banner": "banner.png",
+  "icon": "icon.png",
+  "tags": ["education", "hooks101", "emit", "native", "payment", "tutorial"],
+  "documentation": {
+    "readme": "README.md"
+  }
+}
