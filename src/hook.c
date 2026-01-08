@@ -7,11 +7,11 @@ int64_t hook(uint32_t reserved)
 
     // ACCOUNT: Hook Account
     uint8_t hook_acc[20];
-    hook_account(hook_acc, 20);
+    hook_account((uint32_t)hook_acc, 20);
 
     // ACCOUNT: Origin Tx Account
     uint8_t otxn_acc[20];
-    otxn_field(otxn_acc, 20, sfAccount);
+    otxn_field((uint32_t)otxn_acc, 20, sfAccount);
 
     uint8_t exact_buf[8];
     // Get the amount to receive from the hook param
@@ -51,7 +51,7 @@ int64_t hook(uint32_t reserved)
 
     // Buffer to hold the amount field from the transaction
     uint8_t amount_buffer[8];
-    int64_t amount_len = otxn_field(SBUF(amount_buffer), sfAmount);
+    int64_t amount_len = otxn_field((uint32_t)amount_buffer, 8, sfAmount);
     int64_t otxn_drops = AMOUNT_TO_DROPS(amount_buffer);
     int64_t amount_xfl = float_set(-6, otxn_drops);
     int64_t amount_int = float_int(amount_xfl, 0, 1);
@@ -78,7 +78,7 @@ int64_t hook(uint32_t reserved)
     // Prepare the first payment transactions
     uint64_t amountOutDrops = amountOut * 1000000;
     uint8_t txn[PREPARE_PAYMENT_SIMPLE_SIZE];
-    PREPARE_PAYMENT_SIMPLE(txn, amountOutDrops, ftxn_acc, 0, 0);
+    PREPARE_PAYMENT_SIMPLE((uint32_t)txn, amountOutDrops, (uint32_t)ftxn_acc, 0, 0);
 
     uint8_t emithash[32];
 
