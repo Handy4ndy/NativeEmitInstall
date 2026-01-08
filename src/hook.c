@@ -23,7 +23,7 @@ int64_t hook(uint32_t reserved)
         rollback(SBUF("INE :: Error: exactAmount cannot be zero"), __LINE__);
     
     // Check for potential overflow before converting XAH to drops
-    if (exactAmount > 18446744073709551ULL)
+    if (exactAmount > 18446744073709ULL)
         rollback(SBUF("INE :: Error: exactAmount too large, would cause overflow"), __LINE__);
 
     uint8_t amountOut_buf[8];
@@ -36,7 +36,7 @@ int64_t hook(uint32_t reserved)
         rollback(SBUF("INE :: Error: amountOut cannot be zero"), __LINE__);
     
     // Check for potential overflow before converting XAH to drops
-    if (amountOut > 18446744073709551ULL)
+    if (amountOut > 18446744073709ULL)
         rollback(SBUF("INE :: Error: amountOut too large, would cause overflow"), __LINE__);
 
     uint8_t ftxn_acc[20];
